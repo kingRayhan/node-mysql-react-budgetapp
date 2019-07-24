@@ -1,5 +1,9 @@
 const Router = require('express').Router()
 
-Router.post('/', require('../middlewares/Authenticated'), require('../controllers/CostController').store)
+const { catchErrors } = require('../utils/catchError')
+let Authenticated = require('../middlewares/Authenticated')
+let costControllers = require('../controllers/CostController')
+
+Router.post('/', Authenticated, catchErrors(costControllers.store))
 
 module.exports = Router

@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
-const db = require('./utils/db')
+const ThrowError = require('./utils/ThrowError')
+
 const app = express()
 
 /**
@@ -12,25 +13,13 @@ app.use(express.json())
 app.use('/api/auth', require('./routes/user'))
 app.use('/api/cost', require('./routes/cost'))
 
-/**
- * Models
- */
-const Cost = require('./models/Cost')
-const User = require('./models/User')
-
-/**
- * Relationships
- */
-User.hasMany(Cost)
-Cost.belongsTo(User)
-
-db.sync()
-
 app.use((err, req, res, next) => {
-    //TODO: handle Errors
+    if (err) {
+        res.json(ThrowError(err))
+    }
     next()
 })
 
 app.listen(process.env.PORT, () => {
-    console.log(`Server working at http://localhost:${process.env.PORT}`.bgGreen.black)
+    console.log(`Server working at http://localhost:${process.env.PORT}`)
 })

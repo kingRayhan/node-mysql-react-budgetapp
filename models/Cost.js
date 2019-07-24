@@ -1,7 +1,7 @@
 const sequelize = require('sequelize')
 
 const db = require('../utils/db')
-
+// TODO: Custom error msg
 const Cost = db.define('cost', {
     purpose: {
         type: sequelize.STRING,
@@ -14,7 +14,17 @@ const Cost = db.define('cost', {
         },
         allowNull: false,
     },
-    type: sequelize.ENUM('EXPENSE', 'INCOME'),
+    type: {
+        type: sequelize.ENUM('EXPENSE', 'INCOME'),
+        allowNull: false,
+        validate: {
+            isEnum: exType => {
+                if (!['EXPENSE', 'INCOME'].includes(exType)) {
+                    throw new Error(`Type should be EXPENSE or INCOME`)
+                }
+            },
+        },
+    },
     amount: {
         type: sequelize.DOUBLE,
         allowNull: false,

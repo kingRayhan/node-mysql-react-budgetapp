@@ -1,13 +1,8 @@
 const Cost = require('../models/Cost')
-const ThrowError = require('../utils/ThrowError')
-module.exports.store = async (req, res) => {
-    try {
-        res.json(
-            await Cost.create({
-                ...req.body,
-            })
-        )
-    } catch (error) {
-        res.json(ThrowError(error))
-    }
+module.exports.store = async (req, res, next) => {
+    let cost = await req.user.createCost({
+        ...req.body,
+    })
+
+    res.json(cost)
 }
